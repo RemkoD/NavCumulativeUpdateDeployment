@@ -7,13 +7,13 @@ When you want to deploy a new Dynamics NAV Cumulative Update on multiple server 
 ### How to create a deployment package
  * Download the desired Dynamics NAV Cumulative Update from Microsoft: [NAV2016], [NAV2017], [NAV2018]
 
- * Extract the NAV product DVD from the download
-	Example: Copy the content from CU 20 NAV 2017 W1.zip > NAV.10.0.23021.W1.DVD.zip into ***C:\Temp\NAV 2017 CU20 DVD***.
+ * Extract the NAV product DVD from the download. 
+ 	* Example: Copy the content from CU 20 NAV 2017 W1.zip -> NAV.10.0.23021.W1.DVD.zip into ***C:\Temp\NAV 2017 CU20 DVD***.
 
  * Download PowerShell module NavCumulativeUpdateDeployment from Github
-	Go to: https://github.com/RemkoD/NavCumulativeUpdateDeployment
-	Download: Click the ***clone or download*** button. 
-	Extract the file to ***C:\Temp\NavCumulativeUpdateDeployment***
+ 	* Go to: https://github.com/RemkoD/NavCumulativeUpdateDeployment
+	* Download: Click the ***clone or download*** button. 
+	* Extract the file to ***C:\Temp\NavCumulativeUpdateDeployment***
 
  * Create a new directory for your new CU deployment package.
  ``` PS
