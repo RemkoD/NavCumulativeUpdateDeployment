@@ -54,7 +54,7 @@ Most NAV installations are still on-premises on manually managed servers with wi
 On Windows 8 and Windows Server 2012 and higher PowerShell 3.0 (or higher) is default installed. On Windows 7 systems and Windows Server 2008 R2 you probably need to update the [Windows Management Framework] to get PowerShell 3.0 or later. 
 
 ## Contributing
-Any contribution is welcome and I will try to do something with it. I'm new to GitHub. So I will figure out how to deal with contributions as soon as there is one.
+Any contribution, feedback or suggestion is welcome.
 
 ## Support
 There is no offical support on this tool. Any support is voluntarily.
@@ -77,7 +77,7 @@ This program is distributed "AS IS" in the hope that it will be useful, but WITH
 * [Guys in this thread] *(for testing files on locks)*
 * Jason Wasser *(for the logging module)*
 
-[Thread on the Mibuso forum]: <>
+[Thread on the Mibuso forum]: <https://forum.mibuso.com/discussion/71232/deployment-strategy-for-cumulative-platform-updates#latest>
 [Github]: <https://github.com/RemkoD/NavCumulativeUpdateDeployment>
 [Windows Management Framework]: <https://www.microsoft.com/en-us/download/details.aspx?id=54616>
 [Guys in this thread]: https://social.technet.microsoft.com/Forums/windowsserver/en-US/74ea3752-9403-4296-ab98-d03fcc12b608/how-to-check-to-see-if-a-file-is-openlocked-before-trying-to-copy-it?forum=winserverpowershell
