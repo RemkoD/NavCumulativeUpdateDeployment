@@ -5,10 +5,7 @@ A set of files needed to install a new Dynamics NAV Cumulative Update on a clien
 When you want to deploy a new Dynamics NAV Cumulative Update on multiple server and/or client machines. Setting up a package is a onetime task for each CU you are going to install. After making the package the deployment of the CU on a machine is only a few clicks. 
 
 ### How to create a deployment package
- * Download the desired Dynamics NAV Cumulative Update from Microsoft
-	NAV2016: https://support.microsoft.com/en-us/help/3108728/released-cumulative-updates-for-microsoft-dynamics-nav-2016
-	NAV2017: https://support.microsoft.com/en-us/help/3210255/released-cumulative-updates-for-microsoft-dynamics-nav-2017
-	NAV2018: https://support.microsoft.com/en-us/help/4072483/released-cumulative-updates-for-microsoft-dynamics-nav-2018
+ * Download the desired Dynamics NAV Cumulative Update from Microsoft: [NAV2016], [NAV2017], [NAV2018]
 
  * Extract the NAV product DVD from the download
 	Example: Copy the content from CU 20 NAV 2017 W1.zip > NAV.10.0.23021.W1.DVD.zip into ***C:\Temp\NAV 2017 CU20 DVD***.
@@ -60,3 +57,7 @@ $Localisation = "W1"
 ```
 
 That's it! you've created a CU deployment package. Ready to upgrade any system containing any NAV Component *(for the specific localization)*. 
+
+[NAV2016]: <https://support.microsoft.com/en-us/help/3108728/released-cumulative-updates-for-microsoft-dynamics-nav-2016>
+[NAV2017]: <https://support.microsoft.com/en-us/help/3210255/released-cumulative-updates-for-microsoft-dynamics-nav-2017>
+[NAV2018]: <https://support.microsoft.com/en-us/help/4072483/released-cumulative-updates-for-microsoft-dynamics-nav-2018>
