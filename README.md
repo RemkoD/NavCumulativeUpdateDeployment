@@ -67,7 +67,7 @@ There is no offical support on this tool. Any support is voluntarily.
 Copyright © 2018 [4PS B.V.]
 
 ## License
-This project is licensed under the GPLv3 License - see the [LICENSE.md](LICENSE.md) file for details.
+This project is licensed under the GPLv3 License - see the [LICENSE] file for details.
 
 ## Disclaimer
 This program is distributed "AS IS" in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of merchantability or fitness for a particular purpose.  
@@ -87,5 +87,5 @@ This program is distributed "AS IS" in the hope that it will be useful, but WITH
 [documentation\01 How to prepare a deployment package.md]: <https://github.com/RemkoD/NavCumulativeUpdateDeployment/blob/master/Documentation/01%20How%20to%20prepare%20a%20deployment%20package.md>
 [documentation\02 How to install CU.md]: <https://github.com/RemkoD/NavCumulativeUpdateDeployment/blob/master/Documentation/02 How to install CU.md>
 [Remko Dannenberg]: <https://www.linkedin.com/in/remko-dannenberg-0a34541b/>
-[LICENSE.md]: <https://github.com/RemkoD/NavCumulativeUpdateDeployment/blob/master/LICENSE>
+[LICENSE]: <https://github.com/RemkoD/NavCumulativeUpdateDeployment/blob/master/LICENSE>
 [4PS B.V.]: <https://www.4ps.nl/>
