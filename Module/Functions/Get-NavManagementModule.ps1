@@ -55,7 +55,12 @@ function Get-NavManagementModule
 
         if (-not (Test-Path -Path $ModulePath)) {
 
-            return $false
+            $ModulePath = Join-Path -Path $NavService.InstallLocation -ChildPath $($ModuleName + ".psm1")
+            
+            if (-not (Test-Path -Path $ModulePath)) {
+
+                return $false
+            }
         }
 
         if ($Import) {
