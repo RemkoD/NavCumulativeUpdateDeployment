@@ -1,5 +1,5 @@
 # Automated Dynamics NAV Cumulative Update Deployment
-This projects contains the PowerShell module 'NavCumulativeUpdateDeployment' and documentation with example scripts to automate NAV Cumulative Update (CU) platfrom deployment on server and client machines. 
+This projects contains the PowerShell module 'NavCumulativeUpdateDeployment' and documentation with example scripts to automate NAV Cumulative Update (CU) platform deployment on server and client machines. 
 
 ### The PowerShell module 'NavCumulativeUpdateDeployment'
 The module itself is just bunch of handy functions packed together in one module to automate the CU deployment. The true power of the module is visible in the example scripts. 
@@ -8,13 +8,13 @@ The module itself is just bunch of handy functions packed together in one module
 There are two example scripts. One to deploy the CU. Basically what it does: It scans the host system on installed NAV components, takes the CU patch and makes sure the patch is installed proper on all found NAV components. After the installation you can start the second example script to convert the NAV database with just a few clicks.
 
 **Main features of script 'Step 1':**
-* Scans host on installed NAV components (Windows Registery scan).
-* Stops known blokking services/processes (NST's, clients, MS Office, Application Pools, etc).
+* Scans host on installed NAV components (Windows Registry scan).
+* Stops known blocking services/processes (NST's, clients, MS Office, Application Pools, etc).
 * Validates if all targeted files to update are writeable (stops when some files are still locked)
 * Creates a backup from the folders before updating.
 * Update the files in the NAV component folders with the new CU files.
 * Updates the default NST CustomSettings.config with the new available keys.
-* Updates Windows Registery with the new NAV build number.
+* Updates Windows Registry with the new NAV build number.
 
 **Main features of script 'Step 2':**
  * Scans the local system on unique configured NAV databases from the NAV Service Tier configuration
@@ -33,14 +33,14 @@ Before you can go wild with the example scripts, you need to make the Cumulative
 ## Choosing the right deployment strategy
 Microsoft describes basically three options to deploy a Cumulative Update.
 * Remove NAV installation and reinstall with a NAV DVD on a higher CU
-* Use ClickOnce (Windows RTC and Web Client only)
+* Use Click Once (Windows RTC and Web Client only)
 * Manual patching servers and clients
 
 ### Additional alternative
-In an ideal situation servers are not installed, updated and managed manually. Installations and configuration changes can be done with PowerShell scripts. The scripts together make it possible to generate a new server. This has multiple advantages. One of them is that you can generate a new server using a new NAV DVD. This way you do not need to upgrade a NAV installation with a higher CU, you simply generate a new server with the new NAV CU. Using docker is an example of this. 
+In an ideal situation servers are not installed, updated and managed manually. Installations and configuration changes can be done with PowerShell scripts. The scripts together make it possible to generate a new server. This has multiple advantages. One of them is that you can generate a new server using a new NAV DVD. This way you do not need to upgrade a NAV installation with a higher CU, you simply generate a new server with the new NAV CU. Using Docker is an example of this. 
 
-### Usecase for this project
-Most NAV installations are still on-premises on manually managed servers with wild diverse environmental characteristics (Windows versions, installed NAV components, environment software, configurations). For this usecase I've developed the module NavCumulativeUpdateDeployment. It uses the manual patching method in an automated and more perfected manner. It doesn't require much knowledge of the envirnoment you're upgrading. The scripts detects and updates NAV components on the fly. 
+### Use case for this project
+Most NAV installations are still on-premises on manually managed servers with wild diverse environmental characteristics (Windows versions, installed NAV components, environment software, configurations). For this use case I've developed the module NavCumulativeUpdateDeployment. It uses the manual patching method in an automated and more perfected manner. It doesn't require much knowledge of the environment you're upgrading. The scripts detects and updates NAV components on the fly. 
 
 ## Getting Started
 * Download the project content to your local system
@@ -57,7 +57,7 @@ On Windows 8 and Windows Server 2012 and higher PowerShell 3.0 (or higher) is de
 Any contribution, feedback or suggestion is welcome.
 
 ## Support
-There is no offical support on this tool. Any support is voluntarily.
+There is no official support on this tool. Any support is voluntarily.
  * Issues on [Github]
  * [Thread on the Mibuso forum]
 
