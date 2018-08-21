@@ -1,23 +1,23 @@
 # Automated Dynamics NAV Cumulative Update Deployment
-This projects contains the PowerShell module 'NavCumulativeUpdateDeployment' and documentation with example scripts to automate NAV Cumulative Update (CU) platform deployment on server and client machines. 
+This project contains the PowerShell module 'NavCumulativeUpdateDeployment' and documentation with example scripts to automate NAV Cumulative Update (CU) platform deployment on server and client machines. 
 
 ### The PowerShell module 'NavCumulativeUpdateDeployment'
-The module itself is just bunch of handy functions packed together in one module to automate the CU deployment. The true power of the module is visible in the example scripts. 
+The module itself consists of a selection of useful functions joined together in one module to automate the CU deployment. The true power of the module is visible in the example scripts. 
 
 ### Example scripts: Deploy cumulative update 
-There are two example scripts. One to deploy the CU. Basically what it does: It scans the host system on installed NAV components, takes the CU patch and makes sure the patch is installed proper on all found NAV components. After the installation you can start the second example script to convert the NAV database with just a few clicks.
+There are two example scripts. The first one is used to deploy the CU. This script basically scans the host system for installed NAV components, takes the CU patch and makes sure the patch is installed properly on all NAV components found. After the installation you can start the second example script to convert the NAV database with just a few clicks.
 
 **Main features of script 'Step 1':**
-* Scans host on installed NAV components (Windows Registry scan).
+* Scans host for installed NAV components (Windows Registry scan).
 * Stops known blocking services/processes (NST's, clients, MS Office, Application Pools, etc).
-* Validates if all targeted files to update are writeable (stops when some files are still locked)
-* Creates a backup from the folders before updating.
-* Update the files in the NAV component folders with the new CU files.
+* Verifies if the files to be updated are writable (stops if certain files are still locked)
+* Creates a backup of the folders before updating.
+* Updates the files in the NAV component folders with the new CU files.
 * Updates the default NST CustomSettings.config with the new available keys.
 * Updates Windows Registry with the new NAV build number.
 
 **Main features of script 'Step 2':**
- * Scans the local system on unique configured NAV databases from the NAV Service Tier configuration
+ * Scans the local system for uniquely configured NAV databases from the NAV Service Tier configuration
  * Creates example Cmdlets with prefilled variables to convert the found NAV databases.
  * Saves the examples to a file and opens it in a new PowerShell ISE tab. 
 
@@ -26,22 +26,21 @@ There are two example scripts. One to deploy the CU. Basically what it does: It 
  * Loads the 'Microsoft.Dynamics.Nav.Model.Tools.psd1' module dynamically
  * Invokes the NAV database conversion
  * Invokes the schema synchronization to complete database conversion
- * Restart NST between steps
+ * Restarts NST between steps
 
-Before you can go wild with the example scripts, you need to make the Cumulative Update patch and put the example scripts on the rights place. **[01 How to prepare a deployment package.md]** will help you to do exactly that. 
+Before using the example scripts, you need to create the Cumulative Update patch and put the example scripts on the right places. **[01 How to prepare a deployment package.md]** will help you to do this. 
 
 ## Choosing the right deployment strategy
-Microsoft describes basically three options to deploy a Cumulative Update.
+Microsoft describes three options to deploy a Cumulative Update.
 * Remove NAV installation and reinstall with a NAV DVD on a higher CU
 * Use Click Once (Windows RTC and Web Client only)
 * Manual patching servers and clients
 
-### Additional alternative
-In an ideal situation servers are not installed, updated and managed manually. Installations and configuration changes can be done with PowerShell scripts. The scripts together make it possible to generate a new server. This has multiple advantages. One of them is that you can generate a new server using a new NAV DVD. This way you do not need to upgrade a NAV installation with a higher CU, you simply generate a new server with the new NAV CU. Using Docker is an example of this. 
+### Alternative option
+In an ideal situation servers are not installed, updated and managed manually. Installation and configuration changes can be carried out with PowerShell scripts. Together, the scripts allow you to generate a new server. This has multiple advantages. One of them being that you can generate a new server using a new NAV DVD. This way you do not need to upgrade a NAV installation with a higher CU, you simply generate a new server with the new NAV CU. Using Docker is an example of this. 
 
 ### Use case for this project
-Most NAV installations are still on-premises on manually managed servers with wild diverse environmental characteristics (Windows versions, installed NAV components, environment software, configurations). For this use case I've developed the module NavCumulativeUpdateDeployment. It uses the manual patching method in an automated and more perfected manner. It doesn't require much knowledge of the environment you're upgrading. The scripts detects and updates NAV components on the fly. 
-
+Most NAV installations are still on-premises on manually managed servers with very different environmental characteristics (Windows versions, installed NAV components, environment software, configurations). For this use case I have developed the module NavCumulativeUpdateDeployment. It uses the manual patching method in an automated and more perfected manner. It doesn't require much knowledge of the environment you are upgrading. The scripts detect and update NAV components on the fly. 
 ## Getting Started
 * Download the project content to your local system
 * Create a deployment package *(read: [documentation\01 How to prepare a deployment package.md])*
@@ -49,15 +48,16 @@ Most NAV installations are still on-premises on manually managed servers with wi
 
 ### Prerequisites
 * PowerShell 3.0 or higher
-* Installation of Dynamics NAV 2013 or higher you want to update with a higher Cumulative Update
+* An already installed Microsoft Dynamics NAV environment (2013 or higher) you want to update with a higher Cumulative Update.
+* Currently the script is tested for NAV 2015 to NAV 2017. Take caution with NAV 2018 untill further notice. 
 
-On Windows 8 and Windows Server 2012 and higher PowerShell 3.0 (or higher) is default installed. On Windows 7 systems and Windows Server 2008 R2 you probably need to update the [Windows Management Framework] to get PowerShell 3.0 or later. 
+On Windows 8 and Windows Server 2012 and higher PowerShell 3.0 (or higher) is installed by default. On Windows 7 systems and Windows Server 2008 R2 you probably need to update the [Windows Management Framework] to get PowerShell 3.0 or higher. 
 
 ## Contributing
-Any contribution, feedback or suggestion is welcome.
+All contributions, feedback or suggestions are welcome.
 
 ## Support
-There is no official support on this tool. Any support is voluntarily.
+There is no official support available for this tool. Support is provided on a voluntary basis.
  * Issues on [Github]
  * [Thread on the Mibuso forum]
 
@@ -68,7 +68,7 @@ There is no official support on this tool. Any support is voluntarily.
 This project is licensed under the GPLv3 License - see the [LICENSE] file for details.
 
 ## Disclaimer
-This program is distributed "AS IS" in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of merchantability or fitness for a particular purpose.  
+This program is distributed "AS IS" in the hope that it will prove useful, but WITHOUT ANY WARRANTY; without even the implied warranty of merchantability or fitness for a particular purpose.  
 
 ## Acknowledgments
 * My employer 4PS for making time available to work on this project
