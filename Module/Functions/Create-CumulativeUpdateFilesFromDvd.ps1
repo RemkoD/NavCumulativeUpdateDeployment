@@ -8,6 +8,7 @@
     This version auto detects if the Source DVD is a W1 NAV version or a localization NAV version and makes the patch accordingly. 
 
     This is a refactored version from:
+    https://blogs.msdn.microsoft.com/nav/2018/02/19/how-to-generate-the-hotfix-directories-from-microsoft-dynamics-nav/
     https://blogs.msdn.microsoft.com/nav/2014/11/13/how-to-get-back-the-hotfix-directories-from-nav-2015-cumulative-update-1/
  
 .PARAMETER DvdDirectory
@@ -59,14 +60,9 @@ function Create-CumulativeUpdateFilesFromDvd
         # Get language code from NAV DVD
 
         if ($W1 -eq $false) {
-
-            $RTCLanguageFolder = Resolve-Path $(Join-Path -Path $DvdDirectory -ChildPath "Installers\*\RTC\PFiles\Microsoft Dynamics NAV\$NavVersionFolder\RoleTailored Client")
-            $LanguageCode = $(Get-ChildItem -Path $RTCLanguageFolder -Directory | foreach -Process {if ($_.Name.Length -eq 5) {$_}}).Name
-            $Culture = New-Object System.Globalization.CultureInfo($LanguageCode) -ErrorAction Stop
-        
-            $LanguageCode = $Culture.Name
-            $LanguageThreeLetter = $Culture.ThreeLetterWindowsLanguageName
-            $LanguageTwoLetter = $Culture.TwoLetterISOLanguageName
+            
+            $LanguageFolder = Join-Path -Path $DvdDirectory -ChildPath "\Installers\"
+            $LocalizedVersions = $(Get-ChildItem $LanguageFolder -Directory).Name
         }
 
         # Preparing move action from 
@@ -81,10 +77,6 @@ function Create-CumulativeUpdateFilesFromDvd
         $ToMove += @( @{
                         Source = "ServiceTier\program files\Microsoft Dynamics NAV\$NavVersionFolder\Service"; 
                         Destination = "NST";} )
-
-        $ToMove += @( @{
-                        Source = "BPA"; 
-                        Destination = "BPA";} )
 
         $ToMove += @( @{
                         Source = "WebClient\Microsoft Dynamics NAV\$NavVersionFolder\Web Client"; 
@@ -123,25 +115,47 @@ function Create-CumulativeUpdateFilesFromDvd
                         Destination = "TestToolKit";} )
         }
 
+        if ([int] $($NavVersionFolder) -ge 110) {
+
+            $ToMove += @( @{
+                        Source = "ModernDev\program files\Microsoft Dynamics NAV\$($NavVersionFolder)\Modern Development Environment"; 
+                        Destination = "ModernDev";} )
+        }
+
+        if ([int] $($NavVersionFolder) -lt 110) {
+
+            $ToMove += @( @{
+                        Source = "BPA"; 
+                        Destination = "BPA";} )
+        }
+
         # Language specific folders
 
         if ($W1 -eq $false) {
 
-            $ToMove += @( @{
-                            Source = ”Installers\$LanguageTwoLetter\RTC\PFiles\Microsoft Dynamics NAV\$NavVersionFolder\RoleTailored Client”; 
-                            Destination = "RTC";} )
+            foreach ($LocalizedVersion in $LocalizedVersions) {
 
-            $ToMove += @( @{
-                            Source = ”Installers\$LanguageTwoLetter\Server\PFiles\Microsoft Dynamics NAV\$NavVersionFolder\Service”; 
-                            Destination = "NST";} )
+                Write-Verbose "Preparing moving localization files for localization: $LocalizedVersion"
+                
+                $ToMove += @( @{
+                                Source = ”Installers\$LocalizedVersion\RTC\PFiles\Microsoft Dynamics NAV\$NavVersionFolder\RoleTailored Client”; 
+                                Destination = "RTC";} )
 
-            $ToMove += @( @{
-                            Source = ”Installers\$LanguageTwoLetter\OlAddin\PFiles\Microsoft Dynamics NAV\$NavVersionFolder\OutlookAddIn”; 
-                            Destination = "OUTLOOK";} )
+                if ([int] $($NavVersionFolder) -lt 110) {
+                
+                    $ToMove += @( @{
+                                    Source = ”Installers\$LocalizedVersion\Server\PFiles\Microsoft Dynamics NAV\$NavVersionFolder\Service”; 
+                                    Destination = "NST";} )
 
-            $ToMove += @( @{
-                            Source = ”Installers\$LanguageTwoLetter\WebClient\PFiles\Microsoft Dynamics NAV\$NavVersionFolder\Web Client\bin”; 
-                            Destination = "WEB CLIENT\bin";} )
+                    $ToMove += @( @{
+                                    Source = ”Installers\$LocalizedVersion\OlAddin\PFiles\Microsoft Dynamics NAV\$NavVersionFolder\OutlookAddIn”; 
+                                    Destination = "OUTLOOK";} )
+
+                    $ToMove += @( @{
+                                    Source = ”Installers\$LocalizedVersion\WebClient\PFiles\Microsoft Dynamics NAV\$NavVersionFolder\Web Client”; 
+                                    Destination = "WEB CLIENT";} )
+                }
+            }
         }
 
         # Setup language files (the folders with 4 numbers)
@@ -176,17 +190,30 @@ function Create-CumulativeUpdateFilesFromDvd
 
         Write-Verbose "Done copying files from $DvdDirectory to $BatchDirectory."
  
-        # Delete files that are not needed for a CU upgrade installation scenario
-
         Write-Verbose "Deleting files from $BatchDirectory that are not needed for the batch directory..."
 
-        $FileExtensionsToDelete = @("*.chm", "*.hh", "*.config", "*.ico", "*.flf", "*.sln", "*.rtf")
-            
-        Get-ChildItem $BatchDirectory -include $FileExtensionsToDelete -Recurse | Remove-Item -force -ErrorAction SilentlyContinue
+        $FileExtensionsToDelete = @("*.chm", "*.hh", "*.config", "*.ico", "*.flf", "*.sln", "*.rtf", "*.json")
+        
+        $ExcludeItemsForDelete = @(
+            'finsql.exe.config', 
+            'Microsoft.Dynamics.Nav.Server.exe.config',
+            'Microsoft.Dynamics.Nav.Client.exe.config'
+        )
 
+        Get-ChildItem $BatchDirectory -include $FileExtensionsToDelete -Recurse | Where-Object -Property Name -notin $ExcludeItemsForDelete | Remove-Item -force -ErrorAction SilentlyContinue
+            
         # Delete folders that are not needed for a CU upgrade installation scenario
 
-        $FoldersToDelete = @('RTC\Images', 'RTC\SLT', 'RTC\ReportLayout', 'BPA\Scripts', 'HelpServer\css', 'HelpServer\help', 'HelpServer\images', 'WindowsPowerShellScripts\ApplicationMergeUtilities')
+        $FoldersToDelete = @(
+            'RTC\Images', 
+            'RTC\SLT', 
+            'RTC\ReportLayout', 
+            'BPA\Scripts', 
+            'HelpServer\css', 
+            'HelpServer\help', 
+            'HelpServer\images', 
+            'WEB CLIENT\Resources', 
+            'WindowsPowerShellScripts\ApplicationMergeUtilities')
 
         Foreach ($Folder in $FoldersToDelete) {
     
