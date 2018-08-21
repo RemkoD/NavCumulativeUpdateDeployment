@@ -40,7 +40,7 @@ function Create-CumulativeUpdateFilesFromDvd
         
         $RTCFolder = "\RoleTailoredClient\program files\Microsoft Dynamics NAV\*"
         $NavVersionFolder = Split-Path -Path $(Join-Path -Path $DvdDirectory -ChildPath $RTCFolder) -Leaf -Resolve
-        
+
         if (-not $NavVersionFolder) {
         
             Write-Host "Please check your DvdDirectory parameter"
@@ -69,9 +69,8 @@ function Create-CumulativeUpdateFilesFromDvd
             $LanguageTwoLetter = $Culture.TwoLetterISOLanguageName
         }
 
-        # Move files from DVD to temporarly folder
-
-        Write-Verbose "Copying files from $DvdDirectory to $BatchDirectory..."
+        # Preparing move action from 
+        Write-Verbose "Preparing moving files from $DvdDirectory to $BatchDirectory..."
 
         $ToMove = @()
 
@@ -147,7 +146,6 @@ function Create-CumulativeUpdateFilesFromDvd
 
         # Setup language files (the folders with 4 numbers)
 
-        $DvdDirectory = "D:\Continuous Delivery\Cumulative Update\Files\Product DVD NAV2017 NL CU19"
         $Setupfolder = Get-ChildItem -Path $DvdDirectory | Where-Object { $_.Name -match "[0-9]{4}" }
 
         foreach ($Folder in $Setupfolder) {
@@ -156,6 +154,12 @@ function Create-CumulativeUpdateFilesFromDvd
                             Source = $($Folder.Name); 
                             Destination = "SETUP\$($Folder.Name)";} )
         }
+
+        Write-Verbose "Done preparing the move action."
+        
+        # Move files from DVD to temporarly folder
+        
+        Write-Verbose "Copying files from $DvdDirectory to $BatchDirectory..."
 
         foreach ($Item in $ToMove) {
             
