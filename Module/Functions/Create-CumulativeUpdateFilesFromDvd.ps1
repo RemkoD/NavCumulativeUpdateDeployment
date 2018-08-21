@@ -1,4 +1,4 @@
-﻿<#
+<#
 .SYNOPSIS
     This cmdlet copies all the nessesary files from the Dynamics NAV DVD to create a smaller patch.
 
@@ -142,7 +142,7 @@ function Create-CumulativeUpdateFilesFromDvd
 
             $ToMove += @( @{
                             Source = ”Installers\$LanguageTwoLetter\WebClient\PFiles\Microsoft Dynamics NAV\$NavVersionFolder\Web Client\bin”; 
-                            Destination = "WEB CLIENT";} )
+                            Destination = "WEB CLIENT\bin";} )
         }
 
         # Setup language files (the folders with 4 numbers)
