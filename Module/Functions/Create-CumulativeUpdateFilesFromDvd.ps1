@@ -160,7 +160,7 @@ function Create-CumulativeUpdateFilesFromDvd
 
         # Setup language files (the folders with 4 numbers)
 
-        $Setupfolder = Get-ChildItem -Path $DvdDirectory | Where-Object { $_.Name -match "[0-9]{4}" }
+        $Setupfolder = Get-ChildItem -Path $DvdDirectory | Where-Object { $_.Name -match "^[0-9]{4}$" }
 
         foreach ($Folder in $Setupfolder) {
             
