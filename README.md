@@ -49,9 +49,13 @@ Most NAV installations are still on-premises on manually managed servers with ve
 ### Prerequisites
 * PowerShell 3.0 or higher
 * An already installed Microsoft Dynamics NAV environment (2013 or higher) you want to update with a higher Cumulative Update.
-* Currently the script is tested for NAV 2015 to NAV 2017. Take caution with NAV 2018 untill further notice. 
 
 On Windows 8 and Windows Server 2012 and higher PowerShell 3.0 (or higher) is installed by default. On Windows 7 systems and Windows Server 2008 R2 you probably need to update the [Windows Management Framework] to get PowerShell 3.0 or higher. 
+
+### NAV compatible versions
+* Theoretically working for **NAV 2013** to **NAV 2017**
+* Tested and proven on **NAV 2016** and **NAV 2017**
+* Not yet tested on **NAV 2018**, take caution.
 
 ## Contributing
 All contributions, feedback or suggestions are welcome.
@@ -72,8 +76,8 @@ This program is distributed "AS IS" in the hope that it will prove useful, but W
 
 ## Acknowledgments
 * My employer [4PS] for making time available to work on this project
-* Edwin Keukens - 4PS employee - *(Helping with the NAV data conversion part)*
-* Jorge Alberto Torres - Microsoft employee - *(For the original post on manual patching)*
+* Edwin Keukens - [4PS] employee - *(Helping with the NAV data conversion part)*
+* [Jorge Alberto Torres] - Microsoft employee - *(For the [original post] on manual patching)*
 * [Guys in this thread] *(for testing files on locks)*
 * Jason Wasser *(for the logging module)*
 
@@ -83,7 +87,10 @@ This program is distributed "AS IS" in the hope that it will prove useful, but W
 [Guys in this thread]: <https://social.technet.microsoft.com/Forums/windowsserver/en-US/74ea3752-9403-4296-ab98-d03fcc12b608/how-to-check-to-see-if-a-file-is-openlocked-before-trying-to-copy-it?forum=winserverpowershell>
 [01 How to prepare a deployment package.md]: <https://github.com/RemkoD/NavCumulativeUpdateDeployment/blob/master/Documentation/01%20How%20to%20prepare%20a%20deployment%20package.md>
 [documentation\01 How to prepare a deployment package.md]: <https://github.com/RemkoD/NavCumulativeUpdateDeployment/blob/master/Documentation/01%20How%20to%20prepare%20a%20deployment%20package.md>
-[documentation\02 How to install CU.md]: <https://github.com/RemkoD/NavCumulativeUpdateDeployment/blob/master/Documentation/02 How to install CU.md>									   
+[documentation\02 How to install CU.md]: <https://github.com/RemkoD/NavCumulativeUpdateDeployment/blob/master/Documentation/02 How to install CU.md>	
 [Remko Dannenberg]: <https://www.linkedin.com/in/remko-dannenberg-0a34541b/>
 [LICENSE]: <https://github.com/RemkoD/NavCumulativeUpdateDeployment/blob/master/LICENSE>
 [4PS]:<https://www.4ps.eu/>
+[original post]:<https://blogs.msdn.microsoft.com/nav/2014/11/13/how-to-get-back-the-hotfix-directories-from-nav-2015-cumulative-update-1/>
+[Jorge Alberto Torres]:<https://social.msdn.microsoft.com/profile/Jorge+Alberto+Torres+%5BMSFT%5D>
+
