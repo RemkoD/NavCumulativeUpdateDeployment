@@ -62,7 +62,7 @@ There is no official support available for this tool. Support is provided on a v
  * [Thread on the Mibuso forum]
 
 ## Authors
-**[Remko Dannenberg]** (4PS)
+**[Remko Dannenberg]** ([4PS])
 
 ## License
 This project is licensed under the GPLv3 License - see the [LICENSE] file for details.
@@ -71,7 +71,7 @@ This project is licensed under the GPLv3 License - see the [LICENSE] file for de
 This program is distributed "AS IS" in the hope that it will prove useful, but WITHOUT ANY WARRANTY; without even the implied warranty of merchantability or fitness for a particular purpose.  
 
 ## Acknowledgments
-* My employer 4PS for making time available to work on this project
+* My employer [4PS] for making time available to work on this project
 * Edwin Keukens - 4PS employee - *(Helping with the NAV data conversion part)*
 * Jorge Alberto Torres - Microsoft employee - *(For the original post on manual patching)*
 * [Guys in this thread] *(for testing files on locks)*
@@ -86,3 +86,4 @@ This program is distributed "AS IS" in the hope that it will prove useful, but W
 [documentation\02 How to install CU.md]: <https://github.com/RemkoD/NavCumulativeUpdateDeployment/blob/master/Documentation/02 How to install CU.md>									   
 [Remko Dannenberg]: <https://www.linkedin.com/in/remko-dannenberg-0a34541b/>
 [LICENSE]: <https://github.com/RemkoD/NavCumulativeUpdateDeployment/blob/master/LICENSE>
+[4PS]:<https://www.4ps.eu/>
