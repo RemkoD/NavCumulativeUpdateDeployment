@@ -38,7 +38,8 @@
     # Example: 2018-06-02_logging.txt
 
     $LogFile = "$(Get-Date -UFormat "%Y-%m-%d_%H%M%S")_logging.txt"
-    $LogPath = Join-Path -Path "C:\Temp\Dynamics NAV CU Upgrade Logging" -ChildPath $LogFile
+    $LogFilePath = "C:\Temp\Dynamics NAV CU Upgrade Logging"
+    Set-Variable -Name 'LogPath' -Value $(Join-Path -Path $LogFilePath -ChildPath $LogFile) -Scope Global
 
 # Set backup location
 # This script will make a backup from the NAV files before overwriting them with new files. 
@@ -50,8 +51,8 @@
     $UserValidation = $True
 
 # Message type (if UserValidation is used). InShell or MessageBox
-
-    $MessageType = 'MessageBox'
+    
+    Set-Variable -Name 'MessageType' -Value 'MessageBox' -Scope Global
 
 # Version check validates if the current installed NAV build number is older than the to-install NAV build number.
 # You can disable version check by setting $DisableVersionCheck to true.
