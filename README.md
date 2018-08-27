@@ -78,6 +78,7 @@ This program is distributed "AS IS" in the hope that it will prove useful, but W
 * My employer [4PS] for making time available to work on this project
 * Edwin Keukens - [4PS] employee - *(Helping with the NAV data conversion part)*
 * [Jorge Alberto Torres] - Microsoft employee - *(For the [original post] on manual patching)*
+* [Duilio Tacconi] - Microsoft employee - *(for the [update] on the manual patching post)*
 * [Guys in this thread] *(for testing files on locks)*
 * Jason Wasser *(for the logging module)*
 
@@ -93,4 +94,5 @@ This program is distributed "AS IS" in the hope that it will prove useful, but W
 [4PS]:<https://www.4ps.eu/>
 [original post]:<https://blogs.msdn.microsoft.com/nav/2014/11/13/how-to-get-back-the-hotfix-directories-from-nav-2015-cumulative-update-1/>
 [Jorge Alberto Torres]:<https://social.msdn.microsoft.com/profile/Jorge+Alberto+Torres+%5BMSFT%5D>
-
+[Duilio Tacconi]: <https://www.linkedin.com/in/duilio-tacconi-4042999a/>
+[update]: <https://blogs.msdn.microsoft.com/nav/2018/02/19/how-to-generate-the-hotfix-directories-from-microsoft-dynamics-nav/>
