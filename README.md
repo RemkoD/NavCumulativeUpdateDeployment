@@ -81,7 +81,7 @@ This program is distributed "AS IS" in the hope that it will prove useful, but W
 * [Guys in this thread] *(for testing files on locks)*
 * Jason Wasser *(for the logging module)*
 
-[Thread on the Mibuso forum]: <https://forum.mibuso.com/discussion/71232/deployment-strategy-for-cumulative-platform-updates#latest>
+[Thread on the Mibuso forum]: <https://forum.mibuso.com/discussion/72044/tool-powershell-module-to-create-and-deploy-nav-cu-patches#latest>
 [Github]: <https://github.com/RemkoD/NavCumulativeUpdateDeployment>
 [Windows Management Framework]: <https://www.microsoft.com/en-us/download/details.aspx?id=54616>
 [Guys in this thread]: <https://social.technet.microsoft.com/Forums/windowsserver/en-US/74ea3752-9403-4296-ab98-d03fcc12b608/how-to-check-to-see-if-a-file-is-openlocked-before-trying-to-copy-it?forum=winserverpowershell>
