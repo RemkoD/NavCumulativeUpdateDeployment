@@ -20,21 +20,11 @@ Upgrade NAV CU package
         │───...
 ```
 
-**Option 1** (easiest): You can copy the whole *'Upgrade NAV CU package'* folder to every system you are going to upgrade. 
+**Option 1**: You can copy the whole *'Upgrade NAV CU package'* folder to every system you are going to upgrade. 
 
-**Option 2**: You can execute the scripts and access the module and CU files from a network share. If you want to use option 2 you have to change the location of the cumulative update folder and the PowerShell module folder in the *'Load Deployment Settings.ps1'* file.
+**Option 2**: You can execute the scripts and access the module and CU files from a network share. 
 
-``` PS
-# Example
-# Change the following variables in 'Load Deployment Settings.ps1’
-  $CumulativeUpdateLocation = Join-Path -Path $ScriptRootPath -ChildPath "Cumulative Updates"
-  $CUDeploymentModulePath = Join-Path -Path $ScriptRootPath -ChildPath "Module\NavCumulativeUpdateDeployment.psm1"
-# to your network share location
-  $CumulativeUpdateLocation = "\\server\share\upgrade nav cu package\cumulative update\NAV2017_NL_CU16_Build_10.0.20784.0\"
-  $CUDeploymentModulePath = "\\server\share\upgrade nav cu package\module\NavCumulativeUpdateDeployment.psm1"
-```
-
-**Option 3**: Feel free to create something fancy yourself. These are example scripts after all. 
+**Option 3**: Feel free to create something fancy yourself (Remote Powershell or GPO?). These are example scripts after all. 
 
 ### Make a backup
 Before you are going to convert the NAV database(s) to a higher CU: **Make sure you have made a backup of your NAV database.**
