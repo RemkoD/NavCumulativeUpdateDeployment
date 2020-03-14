@@ -36,15 +36,29 @@ function Create-CumulativeUpdateFilesFromDvd
  
     Process
     {
+        # Get the RTC folder from the DVD folder
+        if (Test-Path (Join-Path $DvdDirectory '\RoleTailoredClient\program files\Microsoft Dynamics NAV\')){
+            
+            # BC14, NAV2018 and older the Windows RoleTailoredClient is still supported.
+            $RTCFolder = '\RoleTailoredClient\program files\Microsoft Dynamics NAV\*'
+
+        } elseif (Test-Path (Join-Path $DvdDirectory 'LegacyDlls\program files\Microsoft Dynamics NAV')){
+            
+            # From Business Central 15 and up the RTC is moved to the Legancy folder. 
+            $RTCFolder = 'LegacyDlls\program files\Microsoft Dynamics NAV\*'
+        } else {
+            
+            Write-Warning "Please check your DvdDirectory parameter"
+            return 
+        }
+
 
         # Get NAV version from NAV DVD
-        
-        $RTCFolder = "\RoleTailoredClient\program files\Microsoft Dynamics NAV\*"
         $NavVersionFolder = Split-Path -Path $(Join-Path -Path $DvdDirectory -ChildPath $RTCFolder) -Leaf -Resolve
 
         if (-not $NavVersionFolder) {
         
-            Write-Host "Please check your DvdDirectory parameter"
+            Write-Warning "Please check your DvdDirectory parameter"
             return 
         }
 
@@ -66,14 +80,19 @@ function Create-CumulativeUpdateFilesFromDvd
         }
 
         # Preparing move action from 
-        Write-Verbose "Preparing moving files from $DvdDirectory to $BatchDirectory..."
+        "Preparing moving files from '{0}' to '{1}'..." -f $DvdDirectory, $BatchDirectory | Write-Verbose
 
         $ToMove = @()
 
-        $ToMove += @( @{
+        if ([int] $($NavVersionFolder) -ge 150) {
+            $ToMove += @( @{
+                        Source = "LegacyDlls\program files\Microsoft Dynamics NAV\$NavVersionFolder\RoleTailored Client"; 
+                        Destination = "RTC";} )
+        } else {
+            $ToMove += @( @{
                         Source = "RoleTailoredClient\program files\Microsoft Dynamics NAV\$NavVersionFolder\RoleTailored Client"; 
                         Destination = "RTC";} )
-
+        }
         $ToMove += @( @{
                         Source = "ServiceTier\program files\Microsoft Dynamics NAV\$NavVersionFolder\Service"; 
                         Destination = "NST";} )
@@ -94,36 +113,38 @@ function Create-CumulativeUpdateFilesFromDvd
                         Source = "HelpServer\DynamicsNAV$($NavVersionFolder)Help"; 
                         Destination = "HelpServer";} )
 
+        if ([int] $($NavVersionFolder) -ge 110 -and [int] $($NavVersionFolder) -lt 130) {
+            $ToMove += @( @{
+                        Source = "ModernDev\program files\Microsoft Dynamics NAV\$($NavVersionFolder)\Modern Development Environment"; 
+                        Destination = "ModernDev";} )
+        } elseif ([int] $($NavVersionFolder) -ge 130) {
+            $ToMove += @( @{
+                        Source = "ModernDev\program files\Microsoft Dynamics NAV\$($NavVersionFolder)\AL Development Environment"; 
+                        Destination = "ModernDev";} )
+        }
+
+        if ([int] $($NavVersionFolder) -lt 150) {
         $ToMove += @( @{
                         Source = "UpgradeToolKit"; 
                         Destination = "UpgradeToolKit";} )
+        }
 
         $ToMove += @( @{
                         Source = "WindowsPowerShellScripts"; 
                         Destination = "WindowsPowerShellScripts";} )
 
-        # NAV version specific folders
-
         if ([int] $($NavVersionFolder) -ge 90) {
-
             $ToMove += @( @{
                         Source = "CrmCustomization"; 
                         Destination = "CrmCustomization";} )
-
+        }
+        if ([int] $($NavVersionFolder) -ge 90 -and [int] $($NavVersionFolder) -lt 150) {
             $ToMove += @( @{
                         Source = "TestToolKit"; 
                         Destination = "TestToolKit";} )
         }
 
-        if ([int] $($NavVersionFolder) -ge 110) {
-
-            $ToMove += @( @{
-                        Source = "ModernDev\program files\Microsoft Dynamics NAV\$($NavVersionFolder)\Modern Development Environment"; 
-                        Destination = "ModernDev";} )
-        }
-
         if ([int] $($NavVersionFolder) -lt 110) {
-
             $ToMove += @( @{
                         Source = "BPA"; 
                         Destination = "BPA";} )
@@ -135,7 +156,7 @@ function Create-CumulativeUpdateFilesFromDvd
 
             foreach ($LocalizedVersion in $LocalizedVersions) {
 
-                Write-Verbose "Preparing moving localization files for localization: $LocalizedVersion"
+                "Preparing moving localization files for localization: {0}" -f $LocalizedVersion | Write-Verbose
                 
                 $ToMove += @( @{
                                 Source = "Installers\$LocalizedVersion\RTC\PFiles\Microsoft Dynamics NAV\$NavVersionFolder\RoleTailored Client"; 
@@ -169,11 +190,11 @@ function Create-CumulativeUpdateFilesFromDvd
                             Destination = "SETUP\$($Folder.Name)";} )
         }
 
-        Write-Verbose "Done preparing the move action."
+        "Done preparing the move action." | Write-Verbose
         
         # Move files from DVD to temporarly folder
         
-        Write-Verbose "Copying files from $DvdDirectory to $BatchDirectory..."
+        "Copying files from {0} to {1}..." -f $DvdDirectory, $BatchDirectory | Write-Verbose
 
         foreach ($Item in $ToMove) {
             
@@ -188,9 +209,9 @@ function Create-CumulativeUpdateFilesFromDvd
             Copy-Item $Source -destination $Destination -recurse -Force
         }  
 
-        Write-Verbose "Done copying files from $DvdDirectory to $BatchDirectory."
+        "Done copying files from {0} to {1}." -f $DvdDirectory, $BatchDirectory | Write-Verbose
  
-        Write-Verbose "Deleting files from $BatchDirectory that are not needed for the batch directory..."
+        "Deleting files from {0} that are not needed for the batch directory..." -f $BatchDirectory | Write-Verbose
 
         $FileExtensionsToDelete = @("*.chm", "*.hh", "*.config", "*.ico", "*.flf", "*.sln", "*.rtf", "*.json")
         
@@ -220,7 +241,7 @@ function Create-CumulativeUpdateFilesFromDvd
             Remove-Item $(Join-Path -Path $BatchDirectory -ChildPath $Folder) -force -Recurse -ErrorAction SilentlyContinue
         }
 
-        Write-Verbose "Done deleting files from $BatchDirectory that are not needed for for the batch directory."
+        "Done deleting files from {0} that are not needed for for the batch directory." -f $BatchDirectory | Write-Verbose
 
         # Specific files to add after cleanup
         
