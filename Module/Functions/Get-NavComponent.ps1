@@ -29,7 +29,7 @@ function Get-NAVComponent
     Begin
     {   
         # Validate NAV Version and get NAV version
-        $NavVersion = Get-NavVersionFolder($NavVersion)
+        $NavVersion = Get-NavVersionFolder -NavVersion $NavVersion
 
 
         # Excluded: BPA, TestToolKit, UpgradeToolKit, WindowsPowerShellScripts

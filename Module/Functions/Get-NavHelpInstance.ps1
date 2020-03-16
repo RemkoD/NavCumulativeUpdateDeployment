@@ -1,14 +1,14 @@
 ﻿<#
 .Synopsis
-    Scans Internet Information Service (IIS) on configured NAV Help Server and returns result.'
+    Scans Internet Information Service (IIS) on configured NAV Help Server and returns result.'
+
 .DESCRIPTION
     Scans Internet Information Service (IIS) on configured NAV Help Server and returns result.
 
 .EXAMPLE
-    $WebServerInstances = Get-NAVHelpInstance -NavVersion "2017"
-
+    $WebServerInstances = Get-NAVHelpInstance -NavVersion "bc150"
 .EXAMPLE
-    $WebServerInstances = Get-NAVHelpInstance -NavVersion "2013 R2"
+    $WebServerInstances = Get-NAVHelpInstance -NavVersion "nav2013 R2"
 
 .PARAMETER NavVersion
 	# The installed NAV Version where you want to import the module from. For example: NAV2016, NAV2017 or NAV2018
@@ -16,36 +16,61 @@
 function Get-NAVHelpInstance
 {
     [CmdletBinding()]
-    [Alias()]
     [OutputType([array])]
     Param
     (
         # 
         [Parameter(Mandatory=$true)]
-        [string]$NavVersion
+        [string] $NavVersion
     )
 
     Begin
     {
         # Validate NAV Version and get NAV version
-
-        $nr = Get-NavVersionFolder($NavVersion)
-        $NavVersionFolder = $nr.NavVersionFolder
-        $NavVersion = $nr.Version
+        [hashtable] $NavVersion = Get-NavVersionFolder -NavVersion $NavVersion
 
         # Default Web Server Name
 
-        $WebServerName = "Microsoft Dynamics NAV $NavVersion Help"
-        
+        if($NavVersion.ProductAbb -eq 'BC'){
+            $WebServerName = 'Microsoft Dynamics 365 Business Central Help'
+        }
+        if($NavVersion.ProductAbb -eq 'NAV'){
+            $WebServerName = 'Microsoft Dynamics NAV {0} Help' -f $NavVersion.Version
+        }
+
+        # Check if the module WebAdministration is pressent. This usually is default available from IIS 7.5 and higher and on Windows Server 2016 or Windows 10 and higher.
+        # On Windows 2012 R2 systems and older with IIS 
+
+        if ( -not (Get-Command Get-WebApplication -errorAction SilentlyContinue)) {
+            
+            # Import the module if it is available
+
+            $Module = Get-Module -List WebAdministration
+            
+            if($Module) {
+                Import-Module WebAdministration -Force
+            } else {
+                #ToDo: Use Write-Error
+                Write-Host "`nPowershell module WebAdministration is missing." -ForegroundColor Red
+                Write-Host "If Internet Information Service (IIS) is installed on this machine, make sure the WebAdministration module is enabled." -ForegroundColor Yellow
+                Write-Host "If this machine doesn't have the Internet Information Service (IIS) installed you can ignore this message." -ForegroundColor Yellow
+            }
+
+        }
 
         # TODO: Check if commandlet Get-Website is available, if not import WebAdministration
         Import-Module WebAdministration -Force
-        $IIS_WebSite = Get-Website | Select-Object -Property name, applicationPool, physicalPath | where name -eq $WebServerName
+        $IIS_WebSite = Get-Website | Select-Object -Property name, applicationPool, physicalPath | Where-Object -Property name -eq $WebServerName
     }
 
     Process
     {
-        $HelpServerComponent = Get-NavComponent -NavVersion 2017 | where Component -eq 'HelpServer'
+        if($NavVersion.ProductAbb -eq 'BC'){
+            $HelpServerComponent = Get-NavComponent -NavVersion $NavVersion.Version | Where-Object -Property Component -eq 'HelpServer'
+        }
+        if($NavVersion.ProductAbb -eq 'NAV'){
+            $HelpServerComponent = Get-NavComponent -NavVersion ('{0}{1}' -f $NavVersion.ProductAbb, $NavVersion.Version) | Where-Object -Property Component -eq 'HelpServer'
+        }
 
         $HelpInstances = @()
     
@@ -76,12 +101,12 @@ function Get-NAVHelpInstance
                     Compair the first two characters of the version with the first two characters of the build.
             #>
 
-            if ($NavVersionFolder.substring(0,2) -ne $FileVersion.substring(0,2)) {
+            if ($NavVersion.NavVersionFolder.substring(0,2) -ne $FileVersion.substring(0,2)) {
                 continue
             }
 
             $obj = New-Object System.Object
-            $obj | Add-Member -MemberType NoteProperty -Name "Website" -Value "Microsoft Dynamics NAV $NavVersion Help"
+            $obj | Add-Member -MemberType NoteProperty -Name "Website" -Value  $WebServerName
             $obj | Add-Member -MemberType NoteProperty -Name "DisplayVersion" -Value $FileVersion
             #$obj | Add-Member -MemberType NoteProperty -Name "HelpServerInstance" -Value $Folder.Name
              

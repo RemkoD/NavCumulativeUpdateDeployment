@@ -23,20 +23,21 @@ function Get-NavWebServerInstance
     (
         # 
         [Parameter(Mandatory=$true)]
-        [string]$NavVersion
+        [string] $NavVersion
     )
 
     Begin
     {
         # Validate NAV Version and get NAV version
-
-        $nr = Get-NavVersionFolder($NavVersion)
-        $NavVersionFolder = $nr.NavVersionFolder
-        $NavVersion = $nr.Version
+        [hashtable] $NavVersion = Get-NavVersionFolder -NavVersion $NavVersion
 
         # Default Web Server Name
-
-        $WebServerName = "Microsoft Dynamics NAV $NavVersion Web Client"
+        if($NavVersion.ProductAbb -eq 'BC'){
+            $WebServerName = 'Microsoft Dynamics 365 Business Central Web Client'
+        }
+        if($NavVersion.ProductAbb -eq 'NAV'){
+            $WebServerName = 'Microsoft Dynamics NAV {0} Web Client' -f $NavVersion.Version
+        }
 
         # Check if the module WebAdministration is pressent. This usually is default available from IIS 7.5 and higher and on Windows Server 2016 or Windows 10 and higher.
         # On Windows 2012 R2 systems and older with IIS 
@@ -69,8 +70,14 @@ function Get-NavWebServerInstance
         $WebServerInstances = @()
         
         foreach ($App in $IIS_WebApp) {
-            $dll = $App.PhysicalPath + '\bin\Microsoft.Dynamics.Nav.Client.WebClient.dll'
-            
+
+            if($NavVersion.ProductAbb -eq 'BC'){
+                $dll = Join-Path $App.PhysicalPath 'Microsoft.Dynamics.Nav.Client.WebClient.dll'
+            }
+            if($NavVersion.ProductAbb -eq 'NAV'){
+                $dll =  Join-Path $App.PhysicalPath '\bin\Microsoft.Dynamics.Nav.Client.WebClient.dll'
+            }
+
             if (-not (Test-Path -Path $dll)) {
                 continue
             }
@@ -86,7 +93,7 @@ function Get-NavWebServerInstance
                     Compair the first two characters of the version with the first two characters of the build.
             #>
 
-            if ($NavVersionFolder.substring(0,2) -ne $FileVersion.substring(0,2)) {
+            if ($NavVersion.NavVersionFolder.substring(0,2) -ne $FileVersion.substring(0,2)) {
                 continue
             }
 
