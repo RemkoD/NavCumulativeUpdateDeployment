@@ -1,7 +1,7 @@
 ﻿# ********************************************** [Script Parameters] ********************************************** #
 
 # Set the NAV Release to patch with the cumulative platform update. 
-# Example: '2017'
+# Example: 'bc15' or 'nav2017'
     
     $NavVersion = ''
 

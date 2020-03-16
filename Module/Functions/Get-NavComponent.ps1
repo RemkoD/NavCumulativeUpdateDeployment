@@ -17,12 +17,11 @@
 function Get-NAVComponent
 {
     [CmdletBinding()]
-    [Alias()]
     [OutputType([array])]
     Param
     (
         [Parameter(Mandatory=$true,
-                   ValueFromPipelineByPropertyName=$true,
+                   ValueFromPipeline=$true,
                    Position=0)]
         $NavVersion
     )
@@ -30,16 +29,13 @@ function Get-NAVComponent
     Begin
     {   
         # Validate NAV Version and get NAV version
+        $NavVersion = Get-NavVersionFolder($NavVersion)
 
-        $nr = Get-NavVersionFolder($NavVersion)
-        $NavVersionFolder = $nr.NavVersionFolder
-        $NavVersion = $nr.Version
 
-        # Excluded for now: BPA, TestToolKit, UpgradeToolKit, WindowsPowerShellScripts
-
+        # Excluded: BPA, TestToolKit, UpgradeToolKit, WindowsPowerShellScripts
         $Adcs = New-Object System.Object
-        $Adcs | Add-Member -MemberType NoteProperty -Name "Component" -Value "ADCS"
-        $Adcs | Add-Member -MemberType NoteProperty -Name "DisplayName" -Value "Microsoft Dynamics NAV Automated Data Capture System"
+        $Adcs | Add-Member -MemberType NoteProperty -Name "Component" -Value 'ADCS'
+        $Adcs | Add-Member -MemberType NoteProperty -Name "DisplayName" -Value 'Microsoft Dynamics NAV Automated Data Capture System'
         $Adcs | Add-Member -MemberType NoteProperty -Name "IsInstalled" -Value $False
         $Adcs | Add-Member -MemberType NoteProperty -Name "InstallLocation" -Value ""
         $Adcs | Add-Member -MemberType NoteProperty -Name "DisplayVersion" -Value ""
@@ -47,9 +43,15 @@ function Get-NAVComponent
         $Adcs | Add-Member -MemberType NoteProperty -Name "Bit" -Value ""
         $Adcs | Add-Member -MemberType NoteProperty -Name "RegKey" -Value ""
 
+        if($NavVersion.ProductAbb -eq 'BC'){
+            $DisplayName = 'Microsoft Dynamics 365 Business Central Help'
+        }
+        if($NavVersion.ProductAbb -eq 'NAV'){
+            $DisplayName = 'Microsoft Dynamics NAV {0} Help' -f $NavVersion.Version
+        }
         $HelpServer = New-Object System.Object
         $HelpServer | Add-Member -MemberType NoteProperty -Name "Component" -Value "HelpServer"
-        $HelpServer | Add-Member -MemberType NoteProperty -Name "DisplayName" -Value "Microsoft Dynamics NAV $NavVersion Help"
+        $HelpServer | Add-Member -MemberType NoteProperty -Name "DisplayName" -Value $DisplayName
         $HelpServer | Add-Member -MemberType NoteProperty -Name "IsInstalled" -Value $False
         $HelpServer | Add-Member -MemberType NoteProperty -Name "InstallLocation" -Value ""
         $HelpServer | Add-Member -MemberType NoteProperty -Name "DisplayVersion" -Value ""
@@ -57,9 +59,15 @@ function Get-NAVComponent
         $HelpServer | Add-Member -MemberType NoteProperty -Name "Bit" -Value ""
         $HelpServer | Add-Member -MemberType NoteProperty -Name "RegKey" -Value ""
 
+        if($NavVersion.ProductAbb -eq 'BC'){
+            $DisplayName = 'Microsoft Dynamics 365 Business Central Server'
+        }
+        if($NavVersion.ProductAbb -eq 'NAV'){
+            $DisplayName = 'Microsoft Dynamics NAV {0} Server' -f $NavVersion.Version
+        }
         $Nst = New-Object System.Object
         $Nst | Add-Member -MemberType NoteProperty -Name "Component" -Value "NST"
-        $Nst | Add-Member -MemberType NoteProperty -Name "DisplayName" -Value "Microsoft Dynamics NAV $NavVersion Server"
+        $Nst | Add-Member -MemberType NoteProperty -Name "DisplayName" -Value $DisplayName
         $Nst | Add-Member -MemberType NoteProperty -Name "IsInstalled" -Value $False
         $Nst | Add-Member -MemberType NoteProperty -Name "InstallLocation" -Value ""
         $Nst | Add-Member -MemberType NoteProperty -Name "DisplayVersion" -Value ""
@@ -67,9 +75,15 @@ function Get-NAVComponent
         $Nst | Add-Member -MemberType NoteProperty -Name "Bit" -Value ""
         $Nst | Add-Member -MemberType NoteProperty -Name "RegKey" -Value ""
 
+        if($NavVersion.ProductAbb -eq 'BC'){
+            $DisplayName = 'Microsoft Dynamics 365 Business Central Outlook Add-in'
+        }
+        if($NavVersion.ProductAbb -eq 'NAV'){
+            $DisplayName = 'Microsoft Dynamics NAV {0} Outlook Add-in' -f $NavVersion.Version
+        }
         $Outlook = New-Object System.Object
         $Outlook | Add-Member -MemberType NoteProperty -Name "Component" -Value "OUTLOOK"
-        $Outlook | Add-Member -MemberType NoteProperty -Name "DisplayName" -Value "Microsoft Dynamics NAV $NavVersion Outlook Add-in"
+        $Outlook | Add-Member -MemberType NoteProperty -Name "DisplayName" -Value $DisplayName
         $Outlook | Add-Member -MemberType NoteProperty -Name "IsInstalled" -Value $False
         $Outlook | Add-Member -MemberType NoteProperty -Name "InstallLocation" -Value ""
         $Outlook | Add-Member -MemberType NoteProperty -Name "DisplayVersion" -Value ""
@@ -77,9 +91,15 @@ function Get-NAVComponent
         $Outlook | Add-Member -MemberType NoteProperty -Name "Bit" -Value ""
         $Outlook | Add-Member -MemberType NoteProperty -Name "RegKey" -Value ""
 
+        if($NavVersion.ProductAbb -eq 'BC'){
+            $DisplayName = 'Microsoft Dynamics NAV RoleTailored Client'
+        }
+        if($NavVersion.ProductAbb -eq 'NAV'){
+            $DisplayName = 'Microsoft Dynamics NAV {0} RoleTailored Client' -f $NavVersion.Version
+        }
         $Rtc = New-Object System.Object
         $Rtc | Add-Member -MemberType NoteProperty -Name "Component" -Value "RTC"
-        $Rtc | Add-Member -MemberType NoteProperty -Name "DisplayName" -Value "Microsoft Dynamics NAV $NavVersion RoleTailored Client"
+        $Rtc | Add-Member -MemberType NoteProperty -Name "DisplayName" -Value $DisplayName
         $Rtc | Add-Member -MemberType NoteProperty -Name "IsInstalled" -Value $False
         $Rtc | Add-Member -MemberType NoteProperty -Name "InstallLocation" -Value ""
         $Rtc | Add-Member -MemberType NoteProperty -Name "DisplayVersion" -Value ""
@@ -87,9 +107,15 @@ function Get-NAVComponent
         $Rtc | Add-Member -MemberType NoteProperty -Name "Bit" -Value ""
         $Rtc | Add-Member -MemberType NoteProperty -Name "RegKey" -Value ""
 
+        if($NavVersion.ProductAbb -eq 'BC'){
+            $DisplayName = 'Microsoft Dynamics 365 Business Central Web Client'
+        }
+        if($NavVersion.ProductAbb -eq 'NAV'){
+            $DisplayName = 'Microsoft Dynamics NAV {0} Web Client' -f $NavVersion.Version
+        }
         $WebClient = New-Object System.Object
         $WebClient | Add-Member -MemberType NoteProperty -Name "Component" -Value "WEB CLIENT"
-        $WebClient | Add-Member -MemberType NoteProperty -Name "DisplayName" -Value "Microsoft Dynamics NAV $NavVersion Web Client"
+        $WebClient | Add-Member -MemberType NoteProperty -Name "DisplayName" -Value $DisplayName
         $WebClient | Add-Member -MemberType NoteProperty -Name "IsInstalled" -Value $False
         $WebClient | Add-Member -MemberType NoteProperty -Name "InstallLocation" -Value ""
         $WebClient | Add-Member -MemberType NoteProperty -Name "DisplayVersion" -Value ""
@@ -164,8 +190,9 @@ function Get-NavComponentsFromWinReg
                     continue
                 }
 
-                # Workaround for ADCS for not having the NAV version in the display name
-                if ($($thisSubKey.GetValue("DisplayVersion")) -notlike "$($NavVersionFolder.Insert(($NavVersionFolder.Length-1),".") + ".")*") {
+                # If the display name matches, check if the major version of the product correspond. 
+                # Unlike NAV the Business Central releases do not have an unique identifiers in the displayname (just like ADCS always had).
+                if ($($thisSubKey.GetValue("DisplayVersion")) -notlike ('{0}*' -f $NavVersion.NavVersionFolder.Substring(0,2))) {
                     continue
                 }
 
@@ -209,31 +236,31 @@ function Get-NavComponentPaths {
     foreach ($Component in $NavComponents) {
                 
         if ($Component.Component -eq "ADCS") {
-            $RegPath = "SOFTWARE\\WOW6432Node\\Microsoft\\Microsoft Dynamics NAV\\$NavVersionFolder\\Automated Data Capture System"
+            $RegPath = 'SOFTWARE\\WOW6432Node\\Microsoft\\Microsoft Dynamics NAV\\{0}\\Automated Data Capture System' -f $NavVersion.NavVersionFolder
         }
 
         if ($Component.Component -eq "HelpServer") {
-            $RegPath = "SOFTWARE\\Microsoft\\Microsoft Dynamics NAV\\$NavVersionFolder\\DynamicsNAV100Help"
+            $RegPath = 'SOFTWARE\\Microsoft\\Microsoft Dynamics NAV\\{0}\\DynamicsNAV{0}Help' -f $NavVersion.NavVersionFolder
         }
 
         if ($Component.Component -eq "NST") {
-            $RegPath = "SOFTWARE\\Microsoft\\Microsoft Dynamics NAV\\$NavVersionFolder\\Service"
+            $RegPath = 'SOFTWARE\\Microsoft\\Microsoft Dynamics NAV\\{0}\\Service' -f $NavVersion.NavVersionFolder
         }
 
         if ($Component.Component -eq "OUTLOOK") {
-            $RegPath = "SOFTWARE\\WOW6432Node\\Microsoft\\Microsoft Dynamics NAV\\$NavVersionFolder\\OutlookAddin"
+            $RegPath = 'SOFTWARE\\WOW6432Node\\Microsoft\\Microsoft Dynamics NAV\\{0}\\OutlookAddin' -f $NavVersion.NavVersionFolder
         }
 
         if ($Component.Component -eq "OUTLOOKSERVER") {
-            $RegPath = ""
+            $RegPath = ''
         }
 
         if ($Component.Component -eq "RTC") {
-            $RegPath = "SOFTWARE\\WOW6432Node\\Microsoft\\Microsoft Dynamics NAV\\$NavVersionFolder\\RoleTailored Client"
+            $RegPath = 'SOFTWARE\\WOW6432Node\\Microsoft\\Microsoft Dynamics NAV\\{0}\\RoleTailored Client' -f $NavVersion.NavVersionFolder
         }
 
         if ($Component.Component -eq "WEB CLIENT") {
-            $RegPath = "SOFTWARE\\Microsoft\\Microsoft Dynamics NAV\\$NavVersionFolder\\Web Client"
+            $RegPath = 'SOFTWARE\\Microsoft\\Microsoft Dynamics NAV\\{0}\\Web Client' -f $NavVersion.NavVersionFolder
         }
 
         $ComponentPath = Get-NavComponentPath ($RegPath)
