@@ -109,7 +109,7 @@ function Stop-LocalNavEnvironment
             $Message = "Following services can lock Dynamics NAV $NAVVersion files and are marked to stop"
             Write-Log -Path $LogPath -Message  $Message -Level Info
             
-            if ($ServicesToStop) { $Message = $($ServicesToStop | Format-List) } else { $Message = "None" }
+            if ($ServicesToStop) { $Message = $($ServicesToStop | Format-List | Out-String)} else { $Message = "None" }
             Write-Log -Path $LogPath -Message  $Message -Level Info
 
             # Processes to stop 
@@ -117,7 +117,7 @@ function Stop-LocalNavEnvironment
             $Message = "Following processes can lock Dynamics NAV $NAVVersion files and are marked to stop"
             Write-Log -Path $LogPath -Message  $Message -Level Info
 
-            if ($ProcessesToStop) { $Message = $($ProcessesToStop | Format-List) } else { $Message = "None" }
+            if ($ProcessesToStop) { $Message = $($ProcessesToStop | Format-List | Out-String) } else { $Message = "None" }
             Write-Log -Path $LogPath -Message  $Message -Level Info
 
             # Applicationpools to stop 
@@ -125,7 +125,7 @@ function Stop-LocalNavEnvironment
             $Message =  "Following applicationpool(s) can lock Dynamics NAV $NAVVersion files and are marked to stop"
             Write-Log -Path $LogPath -Message  $Message -Level Info
 
-            if ($AppPoolsToStop) { $Message = $($AppPoolsToStop | Format-List) } else { $Message = "None" }
+            if ($AppPoolsToStop) { $Message = $($AppPoolsToStop | Format-List | Out-String) } else { $Message = "None" }
             Write-Log -Path $LogPath -Message  $Message -Level Info
 
             return
@@ -227,13 +227,13 @@ function Get-ApplicationpoolsToStop () {
 
     if ($WebServer) {
 
-        $ws = Get-NAVWebServerInstance -NavVersion $NavVersion | Select-Object ApplicationPool | Get-Unique
+        $ws = (Get-NAVWebServerInstance -NavVersion $NavVersion).ApplicationPool | Get-Unique
 
         if ($ws -notin $AppPools) {
 
             $AppPools += $ws
         }
-        $hs = Get-NavHelpInstance -NavVersion $NavVersion | Select-Object ApplicationPool | Get-Unique
+        $hs = (Get-NAVHelpInstance -NavVersion $NavVersion).ApplicationPool | Get-Unique
 
         if ($hs -notin $AppPools) {
 
@@ -258,7 +258,7 @@ function Get-ApplicationpoolsToStop () {
     # Check the current status for the applicationpools
 
     foreach ($AppPool in $AppPools){
-        $AppPoolState = Get-WebAppPoolState -Name $($AppPool.ApplicationPool)
+        $AppPoolState = Get-WebAppPoolState -Name $AppPool
         
         if ($AppPoolState.Value -eq 'Started') {
 
@@ -299,7 +299,8 @@ function Stop-MarkedServices ($ServicesToStop ) {
             -Message $Message `
             -Icon "Warning" `
             -ErrorMsg $ErrorMsg `
-            -Throw:$Throw `            -MessageType $MessageType `
+            -Throw:$Throw `
+            -MessageType $MessageType `
             -Button 'YesNoCancel'
     } 
     
@@ -359,7 +360,8 @@ function Stop-MarkedProcesses ($ProcessesToStop ) {
             -Message "Do you want to stop the following process(es)?`n$($ProcessesToStop | Select-Object Name | Format-List | Out-String)This is required to continue a cumulative update deployment. This script will not start the process(es) again." `
             -Icon "Warning" `
             -ErrorMsg $ErrorMsg `
-            -Throw:$Throw `            -MessageType $MessageType `
+            -Throw:$Throw `
+            -MessageType $MessageType `
             -Button 'YesNoCancel'
     } 
     
@@ -403,7 +405,8 @@ function Stop-MarkedApplicationpools ($AppPoolsToStop ) {
             -Message $Message `
             -Icon "Warning" `
             -ErrorMsg $ErrorMsg `
-            -Throw:$Throw `            -MessageType $MessageType `
+            -Throw:$Throw `
+            -MessageType $MessageType `
             -Button 'YesNoCancel'
     } 
     
@@ -417,33 +420,33 @@ function Stop-MarkedApplicationpools ($AppPoolsToStop ) {
 
     foreach ($AppPool in $AppPoolsToStop){
         
-        $AppPoolState = Get-WebAppPoolState -Name $($AppPool.ApplicationPool)
+        $AppPoolState = Get-WebAppPoolState -Name $AppPool
                 
         if ($AppPoolState.Value -eq 'Started') {
             #ToDo: Try Catch?
-            Stop-WebAppPool -Name $($AppPool.ApplicationPool)
+            Stop-WebAppPool -Name $AppPool
         }
 
         # Validate action
-        $AppPoolState = Get-WebAppPoolState -Name $($AppPool.ApplicationPool)
+        $AppPoolState = Get-WebAppPoolState -Name $AppPool
         
-        while ( $((Get-WebAppPoolState -Name $($AppPool.ApplicationPool)).Value) -eq 'Stopping' ) {
+        while ( $((Get-WebAppPoolState -Name $AppPool).Value) -eq 'Stopping' ) {
 
-            $Message = "Applicationpool '$($AppPool.ApplicationPool)' is stopping..."
+            $Message = "Applicationpool '{0}' is stopping..." -f $AppPool
             Write-Log -Path $LogPath -Message  $Message -Level Info
 
-            sleep -Seconds 1
+            Start-Sleep -Seconds 1
             #ToDO: Prevent endless loop and break after few loops
         }
 
         
         if ($AppPoolState.Value -eq 'Stopped') {
 
-            $Message = "Applicationpool '$($AppPool.ApplicationPool)' is stopped"
+            $Message = "Applicationpool '{0}' is stopped" -f $AppPool
             Write-Log -Path $LogPath -Message  $Message -Level Info
         } else {
 
-            $Message = "Couldn't stop '$($AppPool.ApplicationPool)'. Current status is $($AppPoolState.Value)"
+            $Message = "Couldn't stop '{0}'. Current status is {1}" -f $AppPool, $AppPoolState.Value
             Write-Log -Path $LogPath -Message  $Message -Level Warn
         }
 

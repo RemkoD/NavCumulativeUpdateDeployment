@@ -537,7 +537,6 @@
                 
                 Write-Log -Path $LogPath -Message  $Message -Level Info
 
-                # TODO: Try Catch?
                 Copy-Item -Path $(Join-Path -Path $CUComponentPath -ChildPath "*") -Destination $($Instance.InstancePath) –Recurse -Force -ErrorAction stop
                 
             }
@@ -547,6 +546,27 @@
 
         }
 
+        # NAV2018 and lower: The NAV website in IIS contains a shortcut to the program files web client folder.
+        # Business Central: The BC website in IIS contains all the binairy files.
+        if  ($Component.Component -eq 'WEB CLIENT' -and
+            (Get-NavVersionFolder -NavVersion $NavVersion).ProductAbb -eq 'BC') 
+        {
+            foreach ($Instance in $WebServerInstance) {
+                $WebPublishPath = Join-Path $CUComponentPath 'WebPublish'
+
+                $Message = "Updating {0}`n  from source {1} `n  to destination {2} `n" -f `
+                            $($Component.Displayname), `
+                            $WebPublishPath, `
+                            $($Instance.InstancePath)
+                
+                Write-Log -Path $LogPath -Message  $Message -Level Info
+
+                Copy-Item -Path $(Join-Path -Path $WebPublishPath -ChildPath "*") -Destination $($Instance.InstancePath) –Recurse -Force -ErrorAction stop
+                
+            }
+            
+            # No continue here. Both the webclients in IIS and in programfiles needs to be updated.
+        }   
         $Message = "Updating {0}`n  from source {1} `n  to destination {2} `n" -f `
                     $($Component.Displayname), `
                     $CUComponentPath, `
@@ -591,7 +611,7 @@
         # Check if new keys became available or keys became depricated in the new CU
 
         $NewKeys = Compare-Object -ReferenceObject $($DefaultConfigNew.appSettings.add.key) -DifferenceObject $($DefaultConfigCurrent.appSettings.add.key) | Where{$_.SideIndicator -eq '<='} | Select * -Exclude SideIndicator
-        $DeprecatedKeys = Compare-Object -ReferenceObject $($DefaultConfigNew.appSettings.add.key) -DifferenceObject $($DefaultConfigCurrent.appSettings.add.key) | Where{$_.SideIndicator -eq '=>'} | Select * -Exclude SideIndicator
+        #$DeprecatedKeys = Compare-Object -ReferenceObject $($DefaultConfigNew.appSettings.add.key) -DifferenceObject $($DefaultConfigCurrent.appSettings.add.key) | Where{$_.SideIndicator -eq '=>'} | Select * -Exclude SideIndicator
 
         # If there are new keys, add them to the default CustomSettings.config
 
