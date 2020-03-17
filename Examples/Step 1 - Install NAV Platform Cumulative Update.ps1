@@ -78,7 +78,8 @@
             
             Show-MessageBox `
                 -Message $Message `
-                -Icon "Error" `                -MessageType $MessageType `
+                -Icon "Error" `
+                -MessageType $MessageType `
                 -Button 'OK'
         }
 
@@ -115,7 +116,8 @@
         if ($UserValidation -eq $true -and $MessageType -eq 'MessageBox') {
             Show-MessageBox `
                 -Message $Message `
-                -Icon "Error" `                -MessageType $MessageType `
+                -Icon "Error" `
+                -MessageType $MessageType `
                 -Button 'OK'
         }
 
@@ -124,6 +126,23 @@
 
     $Message = "Script is executed with administrator privileges."
     Write-Log -Path $LogPath -Message  $Message -Level Info
+
+# Check if script is executed in a 64 bit process. 
+# If executed as 32bit the script cannot read the x64 reg keys. Resulting in not updating the x64 components.
+    if(-not [Environment]::Is64BitProcess){
+        $Message = "This script needs to be executed as a 64 bit process. Current process is x86 (32bit)."
+        Write-Log -Path $LogPath -Message  $Message -Level Warn
+
+        if ($UserValidation -eq $true -and $MessageType -eq 'MessageBox') {
+            Show-MessageBox `
+                -Message $Message `
+                -Icon "Error" `
+                -MessageType $MessageType `
+                -Button 'OK'
+        }
+
+        throw $Message
+    }
 
 # Check if supplied NAV version is valid
     
@@ -139,7 +158,8 @@
             
             Show-MessageBox `
                 -Message $Message `
-                -Icon "Error" `                -MessageType $MessageType `
+                -Icon "Error" `
+                -MessageType $MessageType `
                 -Button 'OK'
         }
 
@@ -162,7 +182,8 @@
                     -Message $Message `
                     -Icon "Error" `
                     -ErrorMsg $Message `
-                    -Throw `                    -MessageType $MessageType `
+                    -Throw `
+                    -MessageType $MessageType `
                     -Button 'OK'
         }
 
@@ -191,7 +212,8 @@
     if (-not $CUFolder) {
 
         $Message  = "The to-install Cumulative Update folder is not found. `n`n"
-        $Message += "Check the build nummer in the variable `$CumulativeUpdate is set with a valid value and if the files are pressent in the Cumulative Update folder '{0}'. `n`n" -f `                     $CumulativeUpdateLocation
+        $Message += "Check the build nummer in the variable `$CumulativeUpdate is set with a valid value and if the files are pressent in the Cumulative Update folder '{0}'. `n`n" -f `
+                     $CumulativeUpdateLocation
         $Message += "The Cumulative Update folder should contain the NAV release, NAV build number and NAV localisation (2 characters), example: NAV2017_NL_CU19_Build_10.0.22286.0"
         Write-Log -Path $LogPath -Message  $Message -Level Warn
 
@@ -201,7 +223,8 @@
                     -Message $Message `
                     -Icon "Error" `
                     -ErrorMsg $Message `
-                    -Throw `                    -MessageType $MessageType `
+                    -Throw `
+                    -MessageType $MessageType `
                     -Button 'OK'
         }
 
@@ -225,7 +248,8 @@
         if ($UserValidation -eq $true -and $MessageType -eq 'MessageBox') {
             Show-MessageBox `
                 -Message $Message `
-                -Icon "Error" `                -MessageType $MessageType `
+                -Icon "Error" `
+                -MessageType $MessageType `
                 -Button 'OK'
         }
 
@@ -273,7 +297,8 @@
             if ($UserValidation -eq $true -and $MessageType -eq 'MessageBox') {
                 Show-MessageBox `
                     -Message $Message `
-                    -Icon "Error" `                    -MessageType $MessageType `
+                    -Icon "Error" `
+                    -MessageType $MessageType `
                     -Button 'OK'
             }
 
@@ -311,10 +336,12 @@
         
     Stop-LocalNavEnvironment `
                   -Mode $Mode `
-                  -NavVersion $NavVersion `                  -MSOffice `
+                  -NavVersion $NavVersion `
+                  -MSOffice `
                   -NAVClient `
                   -NAVService `
-                  -WebServer:$StopWebServer `                  -Throw
+                  -WebServer:$StopWebServer `
+                  -Throw
 #endregion
 
 #region ValidateFilesAreEditable
@@ -346,7 +373,8 @@
         if ($UserValidation -eq $true -and $MessageType -eq 'MessageBox') {
             Show-MessageBox `
                 -Message $Message `
-                -Icon "Error" `                -MessageType $MessageType `
+                -Icon "Error" `
+                -MessageType $MessageType `
                 -Button 'OK'
         }
 
@@ -377,7 +405,8 @@
         if ($UserValidation -eq $true -and $MessageType -eq 'MessageBox') {
             Show-MessageBox `
                 -Message $Message `
-                -Icon "Error" `                -MessageType $MessageType `
+                -Icon "Error" `
+                -MessageType $MessageType `
                 -Button 'OK'
         }
 
@@ -401,7 +430,8 @@
         if ($UserValidation -eq $true -and $MessageType -eq 'MessageBox') {
             Show-MessageBox `
                 -Message $Message `
-                -Icon "Error" `                -MessageType $MessageType `
+                -Icon "Error" `
+                -MessageType $MessageType `
                 -Button 'OK'
         }
 
@@ -482,7 +512,8 @@
                 -Message "All validations passed successfully, do you want to upgrade the NAV components?" `
                 -Icon "Question" `
                 -ErrorMsg "Upgrading aborted by users choice" `
-                -Throw `                -MessageType $MessageType `
+                -Throw `
+                -MessageType $MessageType `
                 -Button 'YesNoCancel'
     }
 
