@@ -59,7 +59,9 @@ function Update-WinRegNavBuild
 
                 $thisSubKey = $Reg.OpenSubKey($thisKey)
 
-                if ($($thisSubKey.GetValue("DisplayName")) -like "*Microsoft Dynamics NAV*" -and $thisSubKey.GetValue("DisplayVersion") -eq $oldBuild) {
+                if (($thisSubKey.GetValue("DisplayName") -like "*Microsoft Dynamics NAV*" -or `
+                     $thisSubKey.GetValue("DisplayName") -like "*Microsoft Dynamics 365 Business Central*") -and `
+                     $thisSubKey.GetValue("DisplayVersion") -eq $oldBuild) {
                 
                     $RegPath = 'HKLM:\\{0}' -f $thisKey
                     Set-ItemProperty -Path $RegPath -Name 'DisplayVersion' -Value $newBuild
