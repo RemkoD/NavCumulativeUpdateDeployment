@@ -33,7 +33,7 @@ function Get-DistinctNavDatabases
     Begin
     {
 
-        Get-NavManagementModule -NavVersion $NavVersion -Import
+        Get-NavManagementModule -NavVersion $NavVersion -Import | Out-Null
 
         $Keys = @("DatabaseServer", "DatabaseInstance", "DatabaseName", "ServerInstance")
 
@@ -45,8 +45,10 @@ function Get-DistinctNavDatabases
     {
         
         # Get the NAV Server Instances for the supplied NAV Version
-
-        $NavInstances = Get-NAVServerInstance | Foreach { if ( $(([Version] $_.Version).Major) -eq $(([Version] $NavService.DisplayVersion)).Major ){ $_ } }
+        $DisplayVersion = (Get-NavComponent -NavVersion $NavVersion | Where-Object Component -eq 'NST').DisplayVersion
+        $NavInstances = Get-NAVServerInstance | Foreach-Object { 
+            if ( ([Version] $_.Version).Major -eq ([version] $DisplayVersion).Major){ $_ } 
+        }
 
         # Loop though the NAV Instances to generate a list of all unique NAV databases configured on the NSTs installed on the host machine
 
@@ -61,27 +63,24 @@ function Get-DistinctNavDatabases
             }
 
             # To prevent duplicates in $UniqueDatabases caused by difference in SQL server 'localhost' and '[computername]'
-
             if ($NstValues.DatabaseServer -eq 'localhost') {
 
                 $NstValues.DatabaseServer = $env:computername
             }
 
             # Check if the combination DatabaseServer,  DatabaseInstance and DatabaseName is already pressent. If not, add combination to $UniqueDatabases
-
             $Exists = $false
-
             foreach ($Db in $UniqueDatabases) {
         
-                if ($Db.DatabaseName -eq $NstValues.DatabaseName -and $Db.DatabaseServer -eq $NstValues.DatabaseServer -and $Db.DatabaseInstance -eq $NstValues.DatabaseInstance) {
+                if ($Db.DatabaseName -eq $NstValues.DatabaseName -and `
+                    $Db.DatabaseServer -eq $NstValues.DatabaseServer -and `
+                    $Db.DatabaseInstance -eq $NstValues.DatabaseInstance) {
                     
                     $Exists = $true
                 }
-        
             }
 
             if (-not $Exists) {
-                
                 $UniqueDatabases += $NstValues
             }
         }
@@ -115,7 +114,7 @@ function Get-NAVServerConfigurationValue
         $config = Get-NAVServerConfiguration -ServerInstance $ServerInstance -AsXml
         $configSettings = $config.GetElementsByTagName("add");
 
-        $configKeyValue = $configSettings | Where { $_.Attributes["key"].Value -eq $ConfigKeyName } 
+        $configKeyValue = $configSettings | Where-Object { $_.Attributes["key"].Value -eq $ConfigKeyName } 
         
         if($ConfigKeyValue -eq $null)
         {
