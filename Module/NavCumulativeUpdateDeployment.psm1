@@ -19,8 +19,11 @@
 	'Convert-NavDatabase.ps1'
 	'Convert-NavDatabases.ps1',
 	'Create-CumulativeUpdateFilesFromDvd.ps1',
+	'Get-BCConvertDatabaseScript.ps1',
+	'Get-BCConvertDatabasesScript.ps1',
 	'Get-DatabaseversionnoBySqlcmd.ps1',
 	'Get-DistinctNavDatabases.ps1',
+	'Get-NavAppsManagementModule.ps1',
 	'Get-NavComponent.ps1',
 	'Get-NavHelpInstance.ps1',
 	'Get-NavManagementModule.ps1',
