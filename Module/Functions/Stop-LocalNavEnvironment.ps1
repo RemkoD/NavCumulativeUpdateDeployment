@@ -229,13 +229,13 @@ function Get-ApplicationpoolsToStop () {
 
         $ws = (Get-NAVWebServerInstance -NavVersion $NavVersion).ApplicationPool | Get-Unique
 
-        if ($ws -notin $AppPools) {
+        if ([string]::IsNullOrEmpty($ws) -eq $false -and $ws -notin $AppPools) {
 
             $AppPools += $ws
         }
         $hs = (Get-NAVHelpInstance -NavVersion $NavVersion).ApplicationPool | Get-Unique
 
-        if ($hs -notin $AppPools) {
+        if ([string]::IsNullOrEmpty($hs) -eq $false -and $hs -notin $AppPools) {
 
             $AppPools += $hs
         }
