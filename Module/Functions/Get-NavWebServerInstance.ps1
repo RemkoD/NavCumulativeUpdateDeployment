@@ -63,6 +63,7 @@ function Get-NavWebServerInstance
         # Note: The PhysicalPath can contain a shortcut to the installation folder of the Web Server.
 
         $IIS_WebApp = Get-WebApplication | Select-Object -Property PhysicalPath, applicationPool
+        $IIS_WebApp += Get-Website | Select-Object -Property physicalPath, applicationPool
         
     }
     Process

@@ -105,10 +105,12 @@ function Create-CumulativeUpdateFilesFromDvd
                         Source = "Outlook\program files\Microsoft Dynamics NAV\$NavVersionFolder\OutlookAddin"; 
                         Destination = "OUTLOOK";} )
 
+        if ([int] $($NavVersionFolder) -lt 160) {
         $ToMove += @( @{
                         Source = "ADCS\program files\Microsoft Dynamics NAV\$NavVersionFolder\Automated Data Capture System"; 
                         Destination = "ADCS";} )
-
+        }
+        
         $ToMove += @( @{
                         Source = "HelpServer\DynamicsNAV$($NavVersionFolder)Help"; 
                         Destination = "HelpServer";} )
@@ -158,10 +160,11 @@ function Create-CumulativeUpdateFilesFromDvd
 
                 "Preparing moving localization files for localization: {0}" -f $LocalizedVersion | Write-Verbose
                 
-                $ToMove += @( @{
-                                Source = "Installers\$LocalizedVersion\RTC\PFiles\Microsoft Dynamics NAV\$NavVersionFolder\RoleTailored Client"; 
-                                Destination = "RTC";} )
-
+                if ([int] $($NavVersionFolder) -lt 160) {
+                    $ToMove += @( @{
+                                    Source = "Installers\$LocalizedVersion\RTC\PFiles\Microsoft Dynamics NAV\$NavVersionFolder\RoleTailored Client"; 
+                                    Destination = "RTC";} )
+                }
                 if ([int] $($NavVersionFolder) -lt 110) {
                 
                     $ToMove += @( @{

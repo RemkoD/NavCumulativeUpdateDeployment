@@ -57,6 +57,11 @@ function Get-NavVersionFolder
     Process
     {
         
+        if ($NavVersion -eq "bc16" -or $NavNavVersionFolder -eq "160") {
+            $Version.Version = "bc16"
+            $Version.NavVersionFolder = "160"
+            $Version.ProductAbb = 'BC'
+        }
         if ($NavVersion -eq "bc15" -or $NavNavVersionFolder -eq "150") {
             $Version.Version = "bc15"
             $Version.NavVersionFolder = "150"
