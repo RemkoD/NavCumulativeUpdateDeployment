@@ -184,7 +184,7 @@ function Get-NAVServerConfigurationValue
 
         $configKeyValue = $configSettings | Where-Object { $_.Attributes["key"].Value -eq $ConfigKeyName } 
         
-        if($ConfigKeyValue -eq $null)
+        if([string]::IsNullOrEmpty($ConfigKeyValue))
         {
             Write-Error "The setting $ConfigKeyName could not be found in the configuration file of Microsoft Dynamics NAV Server $ServerInstance."
             return

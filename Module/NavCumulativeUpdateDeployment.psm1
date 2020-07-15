@@ -16,7 +16,8 @@
 ###>
 
 [array] $CmdLets = @(
-	'Convert-NavDatabase.ps1'
+	'Convert-BcDatabase',
+	'Convert-NavDatabase.ps1',
 	'Convert-NavDatabases.ps1',
 	'Create-CumulativeUpdateFilesFromDvd.ps1',
 	'Get-BCConvertDatabaseScript.ps1',

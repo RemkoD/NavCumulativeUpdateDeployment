@@ -21,7 +21,6 @@ function Get-NavWebServerInstance
     [OutputType([array])]
     Param
     (
-        # 
         [Parameter(Mandatory=$true)]
         [string] $NavVersion
     )
