@@ -2,12 +2,15 @@ function Convert-BcDatabase {
     Param(
         [Parameter(Mandatory=$true)]    
         [string] $ServerInstance,
+        [Parameter(Mandatory=$true)]    
+        [string] $NavVersion,
+        [Parameter(Mandatory=$true)]    
+        [string] $SystemPath,
+        [Parameter(Mandatory=$true)]    
+        [string] $SystemApplicationPath,
+        
         [switch] $Force
     )
-
-    # Start Init
-    $Symbols   = "\\fps01\Development\AL\16.3.14085.14238\.alpackages\Microsoft_System_16.0.14073.14195.app"
-    $SystemApp = "\\fps01\Development\AL\16.3.14085.14238\.alpackages\Microsoft_System Application_16.3.14085.14238.app"
 
     Get-NavManagementModule -NavVersion $NavVersion -Import | Out-Null
     Get-NavAppsManagementModule -NavVersion $NavVersion -Import | Out-Null
@@ -25,32 +28,40 @@ function Convert-BcDatabase {
 
     # Generate Script
     $ConvertDatabase = @() 
+    $ConvertDatabase += "### Parameters ###"
+    $ConvertDatabase += "`$ServerInstance        = '{0}'" -f $ServerInstance
+    $ConvertDatabase += "`$SqlInstance           = '{0}'" -f $SqlInstance
+    $ConvertDatabase += "`$DatabaseName          = '{0}'" -f $DatabaseName
+    $ConvertDatabase += ''
+    $ConvertDatabase += "`$SystemPath            = '{0}'" -f $SystemPath
+    $ConvertDatabase += "`$SystemApplicationPath = '{0}'" -f $SystemApplicationPath
+    $ConvertDatabase += ''
     $ConvertDatabase += "# Convert the Business Central database"
-    $ConvertDatabase += "Invoke-NAVApplicationDatabaseConversion -DatabaseServer '{0}' -DatabaseName '{1}' -Force" -f $SqlInstance, $DatabaseName
+    $ConvertDatabase += 'Invoke-NAVApplicationDatabaseConversion -DatabaseServer $SqlInstance -DatabaseName $DatabaseName -Force'
     $ConvertDatabase += ''
     $ConvertDatabase += "# Start the Business Central Server Instance"
-    $ConvertDatabase += "Set-NAVServerInstance -ServerInstance '{0}' -Start" -f $ServerInstance
+    $ConvertDatabase += 'Set-NAVServerInstance -ServerInstance $ServerInstance -Start'
     $ConvertDatabase += ''
     $ConvertDatabase += "# Unpublish Microsoft System Symbols"
-    $ConvertDatabase += "Get-NAVAppInfo -ServerInstance '{0}' -SymbolsOnly | Unpublish-NAVApp" -f $ServerInstance
+    $ConvertDatabase += 'Get-NAVAppInfo -ServerInstance $ServerInstance -SymbolsOnly | Unpublish-NAVApp'
     $ConvertDatabase += ''
     $ConvertDatabase += "# Publish the System Symbols for the new platform release"
-    $ConvertDatabase += "Publish-NAVApp -ServerInstance '{0}' -PackageType SymbolsOnly -Path '{1}'" -f $ServerInstance, $Symbols
+    $ConvertDatabase += 'Publish-NAVApp -ServerInstance $ServerInstance -PackageType SymbolsOnly -Path $SystemPath'
     $ConvertDatabase += ''
     $ConvertDatabase += "# Sync the changes to SQL"
-    $ConvertDatabase += "Sync-NAVTenant -ServerInstance '{0}' -Mode Sync -Force" -f $ServerInstance
+    $ConvertDatabase += 'Sync-NAVTenant -ServerInstance $ServerInstance -Mode Sync -Force'
     $ConvertDatabase += ''
     $ConvertDatabase += "# Uninstall Microsoft System Application"
-    $ConvertDatabase += "Get-NAVTenant -ServerInstance '{0}' | ForEach-Object {{`n    Get-NAVAppInfo -ServerInstance `$_.ServerInstance -Id '63ca2fa4-4f03-4f2b-a480-172fef340d3f' -Publisher 'Microsoft' | Uninstall-NAVApp -Tenant `$_.Id -Force `n}}" -f $ServerInstance
+    $ConvertDatabase += "Get-NAVTenant -ServerInstance `$ServerInstance | ForEach-Object {`n    Get-NAVAppInfo -ServerInstance `$_.ServerInstance -Id '63ca2fa4-4f03-4f2b-a480-172fef340d3f' -Publisher 'Microsoft' | Uninstall-NAVApp -Tenant `$_.Id -Force `n}"
     $ConvertDatabase += ''
     $ConvertDatabase += "# Publish the new System Application"
-    $ConvertDatabase += "Publish-NAVApp -ServerInstance '{0}' -Path '{1}' -SkipVerification" -f $ServerInstance, $SystemApp
+    $ConvertDatabase += 'Publish-NAVApp -ServerInstance $ServerInstance -Path $SystemApplicationPath -SkipVerification'
     $ConvertDatabase += ''
     $ConvertDatabase += "# Unpublish previous System Application(s)"
-    $ConvertDatabase += "Get-NAVAppInfo -ServerInstance '{0}' -Id '63ca2fa4-4f03-4f2b-a480-172fef340d3f' -Publisher 'Microsoft' |`n    Where-Object -Property Version -ne `$(Get-NAVAppInfo -Path '{1}').Version | `n    Unpublish-NAVApp" -f $ServerInstance, $SystemApp
+    $ConvertDatabase += "Get-NAVAppInfo -ServerInstance `$ServerInstance -Id '63ca2fa4-4f03-4f2b-a480-172fef340d3f' -Publisher 'Microsoft' |`n    Where-Object -Property Version -ne `$(Get-NAVAppInfo -Path `$SystemApplicationPath).Version | `n    Unpublish-NAVApp"
     $ConvertDatabase += ''
     $ConvertDatabase += "# Install the new System Application"
-    $ConvertDatabase += "Get-NAVTenant -ServerInstance '{0}' | ForEach-Object {{" -f $ServerInstance
+    $ConvertDatabase += 'Get-NAVTenant -ServerInstance $ServerInstance | ForEach-Object {{'
     $ConvertDatabase += "    Get-NAVAppInfo -ServerInstance `$_.ServerInstance -Id '63ca2fa4-4f03-4f2b-a480-172fef340d3f' | Sync-NAVApp -Mode ForceSync -Tenant `$_.Id -Force"
     $ConvertDatabase += "    Get-NAVAppInfo -ServerInstance `$_.ServerInstance -Id '63ca2fa4-4f03-4f2b-a480-172fef340d3f' | Start-NAVAppDataUpgrade -Tenant `$_.Id }"
 
